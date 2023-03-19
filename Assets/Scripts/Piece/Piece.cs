@@ -8,9 +8,9 @@ public class Piece : MonoBehaviour
     public TileType TileType;
     public List<Edge> Edges;
 
+    public SpriteRenderer wholePuzzle;
+    
     #region Spawn
-
-    #endregion
 
     public void Rotate(int rotateTimes)
     {
@@ -39,7 +39,8 @@ public class Piece : MonoBehaviour
 
     public void RotateIfNeeded(List<Edge> possibleEdges)
     {
-        for (int i = 0; i < 3; i++)
+        //Rotated 90 degree each time
+        for (int i = 0; i < 4; i++)
         {
             var isSame = CompareEdges(possibleEdges);
             if (isSame)
@@ -48,7 +49,6 @@ public class Piece : MonoBehaviour
             }
             Rotate(1);
         }
-        
     }
     private bool CompareEdges(List<Edge> possibleEdges)
     {
@@ -66,9 +66,20 @@ public class Piece : MonoBehaviour
         return true;
     }
 
-    internal void SetSpawnPosition(int row, int col)
+    internal void SetSpawnPosition(int rowIndex, int colIndex,float scaleAndPositionRatio)
     {
-        int index = row * 6 + col;
-        transform.position = new Vector2(2*col, -2*row);
+        transform.localScale = transform.localScale * scaleAndPositionRatio;
+        wholePuzzle.transform.localScale = wholePuzzle.transform.localScale / scaleAndPositionRatio;
+        transform.localPosition = GetCalculatedPosition(rowIndex,colIndex,scaleAndPositionRatio);
+        wholePuzzle.transform.rotation = Quaternion.identity;
     }
+    public void SetWholePuzzleImagePosition(Vector3 puzzleImagePosition)
+    {
+        wholePuzzle.transform.position = puzzleImagePosition;
+    }
+    public Vector2 GetCalculatedPosition(int row,int col, float scaleAndPositionRatio)
+    {
+       return new Vector2(-2.07f + (scaleAndPositionRatio * 0.74f * col), 3.217f - (scaleAndPositionRatio * 0.747f * row));
+    }
+    #endregion
 }

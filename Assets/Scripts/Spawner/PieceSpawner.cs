@@ -6,19 +6,26 @@ using UnityEngine;
 
 public class PieceSpawner : MonoBehaviour
 {
-    [SerializeField] List<Piece> piecePrefabs;
     [SerializeField] Transform pieceParent;
+    [SerializeField] Transform centeredObject;
 
     private Piece[,] Board;
+    private List<Piece> piecePrefabs;
+
+
+    private void Awake()
+    {
+        piecePrefabs = GameData.Instance.GetPiecePrefabs();
+    }
 
     private void Start()
     {
-        CreateBoard(6, 6);
+        CreateBoard(10);
     }
 
-    private void CreateBoard(int rowCount, int colCount)
+    private void CreateBoard(int length)
     {
-        Board = new Piece[rowCount, colCount];
+        Board = new Piece[length, length];
 
         //Spawn Corners. We need to rotate the corner piece according to index of it
         SetCorners();
@@ -28,13 +35,22 @@ public class PieceSpawner : MonoBehaviour
 
         // Used Algortyhm to fill the empty slots.
         SetEmptySlots();
+
+        //SetWholePuzzleSpriteObjectThatExistInEachPiece
+        SetWholePuzzleImages();
+
+        //AlignCenter
+        AlignCenter();
+
     }
 
+    
     #region Spawn Functions
 
     private void SetCorners()
     {
         var cornerPiecePrefab = piecePrefabs.Find(x => x.TileType == TileType.TWO_FLAT);
+        float resizeRatio = SpawnerTools.DEFAULT_ROW_COLUMN_COUNT / Board.GetLength(0);
         Coordinate[] cornerIndexes = Board.GetCornerIndexes();
         for (int i = 0; i < cornerIndexes.Length; i++)
         {
@@ -43,7 +59,7 @@ public class PieceSpawner : MonoBehaviour
 
             int rowCorner = cornerIndexes[i].rowIndex;
             int colCorner = cornerIndexes[i].colIndex;
-            cornerInstance.SetSpawnPosition(rowCorner, colCorner);
+            cornerInstance.SetSpawnPosition(rowCorner, colCorner, resizeRatio);
             Board[rowCorner, colCorner] = cornerInstance;
         }
     }
@@ -51,7 +67,7 @@ public class PieceSpawner : MonoBehaviour
     {
         var innerPiecePrefab = piecePrefabs.Find(x => x.TileType == TileType.NO_FLAT);
         Coordinate[] innerIndexes = Board.GetInnerIndexes();
-
+        float resizeRatio = SpawnerTools.DEFAULT_ROW_COLUMN_COUNT / Board.GetLength(0);
         for (int i = 0; i < innerIndexes.Length; i++)
         {
             var innerInstance = Instantiate(innerPiecePrefab, pieceParent);
@@ -65,7 +81,7 @@ public class PieceSpawner : MonoBehaviour
             if ((modeOfRow == 0 && modeOfCol == 1) || (modeOfRow == 1 && modeOfCol == 0))
                 innerInstance.Rotate(1);
 
-            innerInstance.SetSpawnPosition(rowInner, colInner);
+            innerInstance.SetSpawnPosition(rowInner, colInner, resizeRatio);
             Board[rowInner, colInner] = innerInstance;
         }
     }
@@ -79,6 +95,7 @@ public class PieceSpawner : MonoBehaviour
         int colStart = 0;
         int colEnd = Board.GetLength(1) - 1;
 
+        float resizeRatio = SpawnerTools.DEFAULT_ROW_COLUMN_COUNT / Board.GetLength(0);
         List<Coordinate> emptySlots = new List<Coordinate>();
         var availablePiecePrefabs = piecePrefabs.FindAll(x => x.TileType == TileType.TWO_IN || x.TileType == TileType.TWO_OUT);
 
@@ -123,14 +140,32 @@ public class PieceSpawner : MonoBehaviour
             var possibleEdges = Board.GetPossibleEdges(emptySlots[i].rowIndex, emptySlots[i].colIndex);
             var pieceInstance = Instantiate(availablePiecePrefabs[i % 2], pieceParent);
             pieceInstance.RotateIfNeeded(possibleEdges);
-            pieceInstance.SetSpawnPosition(emptySlots[i].rowIndex, emptySlots[i].colIndex);
+            pieceInstance.SetSpawnPosition(emptySlots[i].rowIndex, emptySlots[i].colIndex, resizeRatio);
+
             Board[emptySlots[i].rowIndex, emptySlots[i].colIndex] = pieceInstance;
         }
 
     }
+    private void SetWholePuzzleImages()
+    {
+        var position = Board.GetCenterPositionOfBoard();
 
+        Board.Iterate((int rowIndex,int columnIndex) =>
+        {
+            Piece piece = Board[rowIndex, columnIndex];
+            piece.SetWholePuzzleImagePosition(position);
+        });
+    }
+    private void AlignCenter()
+    {
+        var centerPositionOfBoard = Board.GetCenterPositionOfBoard();
+
+        centeredObject.position = centerPositionOfBoard;
+        pieceParent.SetParent(centeredObject);
+        centeredObject.position = new Vector3(0, 1,0);
+    }
 
     #endregion
 
-    
+
 }

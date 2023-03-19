@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public static class SpawnerTools
 {
     public const int DEFAULT_ROTATION_AMOUNT = 90;
+    public const float DEFAULT_ROW_COLUMN_COUNT = 6;
     public static Coordinate[] GetCornerIndexes(this Piece[,] board)
     {
         int xLength = board.GetLength(0);
@@ -121,6 +123,32 @@ public static class SpawnerTools
             return EdgeStates.In;
 
         return EdgeStates.None;
+    }
+
+    public static Vector3 GetCenterPositionOfBoard(this Piece[,] board)
+    {
+        int rowCount = board.GetLength(0);
+        int colCount = board.GetLength(1);
+
+        int centerRow = rowCount / 2 - 1;
+        int centerCol = colCount / 2 - 1;
+
+        Piece prevCenterPiece = board[centerRow, centerCol];
+        Piece afterCenterPiece = board[centerRow + 1, centerCol + 1];
+        return (prevCenterPiece.transform.position + afterCenterPiece.transform.position) / 2;
+    }
+    public static void Iterate(this Piece[,] Board,Action<int,int> OnIterate)
+    {
+        int rowCount = Board.GetLength(0);
+        int colCount = Board.GetLength(1);
+
+        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
+        {
+            for (int columnIndex = 0; columnIndex < colCount; columnIndex++)
+            {
+                OnIterate?.Invoke(rowIndex, columnIndex);
+            }
+        }
     }
 }
 [System.Serializable]
