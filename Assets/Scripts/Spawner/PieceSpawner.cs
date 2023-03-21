@@ -2,18 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
+using DG.Tweening;
 
 public class PieceSpawner : MonoBehaviour
 {
     [SerializeField] Transform pieceParent;
     [SerializeField] Transform centeredObject;
+    [SerializeField] Transform bottomPlaceObject;
 
     private Piece[,] Board;
     private List<Piece> piecePrefabs;
 
     private Sprite levelSprite;
     private int boardSize;
+
+    public static event Action OnBoardReady;
 
     #region UNITY FUNCTIONS
 
@@ -30,7 +35,16 @@ public class PieceSpawner : MonoBehaviour
     #endregion
 
     #region Spawn Functions
-    private void CreateBoard(int length)
+
+    private void LevelSelectionPanel_OnLevelSelected(Sprite levelSprite, int boardSize)
+    {
+        this.levelSprite = levelSprite;
+        this.boardSize = boardSize;
+        int length = (int)Mathf.Sqrt(boardSize);
+        StartCoroutine(CreateBoard(length));
+    }
+
+    private IEnumerator CreateBoard(int length)
     {
         Board = new Piece[length, length];
 
@@ -49,6 +63,9 @@ public class PieceSpawner : MonoBehaviour
         //AlignCenter
         AlignCenter();
 
+        //yield return MovePiecesToBottom();
+        
+        OnBoardReady?.Invoke();
     }
     private void SetCorners()
     {
@@ -168,15 +185,28 @@ public class PieceSpawner : MonoBehaviour
         centeredObject.position = new Vector3(0, 1,0);
     }
 
+    private IEnumerator MovePiecesToBottom()
+    {
+        float duration = 1.5f;
+
+        Board.Iterate((int rowIndex,int colIndex) => 
+        {
+            Transform piece = Board[rowIndex,colIndex].transform;
+
+            piece.DOMove(new Vector3(-3,3,0),duration)
+            .OnComplete(()=>
+            {
+                piece.SetParent(bottomPlaceObject);
+            });
+
+        } );
+
+        yield return new WaitForSeconds(duration);
+    }
+
     #endregion
 
-    private void LevelSelectionPanel_OnLevelSelected(Sprite levelSprite, int boardSize)
-    {
-        this.levelSprite = levelSprite;
-        this.boardSize = boardSize;
-        int length = (int)Mathf.Sqrt(boardSize);
-        CreateBoard(length);
-    }
+    
 
 
 }
