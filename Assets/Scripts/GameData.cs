@@ -22,11 +22,20 @@ public class GameData : ScriptableObject
     }
 
     [SerializeField] List<Piece> piecePrefabs;
-    [SerializeField] List<GameObject> puzzleImages;
+    [SerializeField] Sprite[] levelSprites;
+    [SerializeField] int[] boardSizeCounts;
 
 
     public List<Piece> GetPiecePrefabs()
     {
         return piecePrefabs;
+    } 
+    public Sprite[] GetLevelDatas()
+    {
+        return levelSprites;
+    }
+    public int[] GetBoardSizeItems()
+    {
+        return boardSizeCounts;
     }
 }

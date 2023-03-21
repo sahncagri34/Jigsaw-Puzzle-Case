@@ -12,17 +12,24 @@ public class PieceSpawner : MonoBehaviour
     private Piece[,] Board;
     private List<Piece> piecePrefabs;
 
+    private Sprite levelSprite;
+    private int boardSize;
+
+    #region UNITY FUNCTIONS
 
     private void Awake()
     {
         piecePrefabs = GameData.Instance.GetPiecePrefabs();
+        LevelSelectionPanel.OnLevelSelected += LevelSelectionPanel_OnLevelSelected;
     }
-
-    private void Start()
+   
+    private void OnDestroy()
     {
-        CreateBoard(10);
+        LevelSelectionPanel.OnLevelSelected -= LevelSelectionPanel_OnLevelSelected;
     }
+    #endregion
 
+    #region Spawn Functions
     private void CreateBoard(int length)
     {
         Board = new Piece[length, length];
@@ -43,10 +50,6 @@ public class PieceSpawner : MonoBehaviour
         AlignCenter();
 
     }
-
-    
-    #region Spawn Functions
-
     private void SetCorners()
     {
         var cornerPiecePrefab = piecePrefabs.Find(x => x.TileType == TileType.TWO_FLAT);
@@ -59,7 +62,7 @@ public class PieceSpawner : MonoBehaviour
 
             int rowCorner = cornerIndexes[i].rowIndex;
             int colCorner = cornerIndexes[i].colIndex;
-            cornerInstance.SetSpawnPosition(rowCorner, colCorner, resizeRatio);
+            cornerInstance.SetPiece(levelSprite,rowCorner, colCorner, resizeRatio);
             Board[rowCorner, colCorner] = cornerInstance;
         }
     }
@@ -81,7 +84,7 @@ public class PieceSpawner : MonoBehaviour
             if ((modeOfRow == 0 && modeOfCol == 1) || (modeOfRow == 1 && modeOfCol == 0))
                 innerInstance.Rotate(1);
 
-            innerInstance.SetSpawnPosition(rowInner, colInner, resizeRatio);
+            innerInstance.SetPiece(levelSprite, rowInner, colInner, resizeRatio);
             Board[rowInner, colInner] = innerInstance;
         }
     }
@@ -140,7 +143,7 @@ public class PieceSpawner : MonoBehaviour
             var possibleEdges = Board.GetPossibleEdges(emptySlots[i].rowIndex, emptySlots[i].colIndex);
             var pieceInstance = Instantiate(availablePiecePrefabs[i % 2], pieceParent);
             pieceInstance.RotateIfNeeded(possibleEdges);
-            pieceInstance.SetSpawnPosition(emptySlots[i].rowIndex, emptySlots[i].colIndex, resizeRatio);
+            pieceInstance.SetPiece(levelSprite, emptySlots[i].rowIndex, emptySlots[i].colIndex, resizeRatio);
 
             Board[emptySlots[i].rowIndex, emptySlots[i].colIndex] = pieceInstance;
         }
@@ -166,6 +169,14 @@ public class PieceSpawner : MonoBehaviour
     }
 
     #endregion
+
+    private void LevelSelectionPanel_OnLevelSelected(Sprite levelSprite, int boardSize)
+    {
+        this.levelSprite = levelSprite;
+        this.boardSize = boardSize;
+        int length = (int)Mathf.Sqrt(boardSize);
+        CreateBoard(length);
+    }
 
 
 }

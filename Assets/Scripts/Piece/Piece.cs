@@ -66,13 +66,17 @@ public class Piece : MonoBehaviour
         return true;
     }
 
-    internal void SetSpawnPosition(int rowIndex, int colIndex,float scaleAndPositionRatio)
+    internal void SetPiece(Sprite puzzleImage,int rowIndex, int colIndex,float scaleAndPositionRatio)
     {
+        wholePuzzle.sprite = puzzleImage;
+
         transform.localScale = transform.localScale * scaleAndPositionRatio;
         wholePuzzle.transform.localScale = wholePuzzle.transform.localScale / scaleAndPositionRatio;
-        transform.localPosition = GetCalculatedPosition(rowIndex,colIndex,scaleAndPositionRatio);
+
+        transform.localPosition = GetCalculatedPosition(rowIndex, colIndex, scaleAndPositionRatio);
         wholePuzzle.transform.rotation = Quaternion.identity;
     }
+    
     public void SetWholePuzzleImagePosition(Vector3 puzzleImagePosition)
     {
         wholePuzzle.transform.position = puzzleImagePosition;
