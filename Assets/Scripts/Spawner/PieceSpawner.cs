@@ -63,6 +63,7 @@ public class PieceSpawner : MonoBehaviour
         //AlignCenter
         AlignCenter();
 
+        yield return null;
         //yield return MovePiecesToBottom();
         
         OnBoardReady?.Invoke();
