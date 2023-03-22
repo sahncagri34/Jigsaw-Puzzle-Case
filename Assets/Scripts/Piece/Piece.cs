@@ -2,13 +2,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Piece : MonoBehaviour
 {
     public TileType TileType;
     public List<Edge> Edges;
 
-    public SpriteRenderer wholePuzzle;
+    public Image wholePuzzle;
+
+    private Vector2 initialScale;
+
+
+    private void Awake() {
+        initialScale = transform.localScale;
+    }
+
     
     #region Spawn
 
@@ -70,9 +79,8 @@ public class Piece : MonoBehaviour
     {
         wholePuzzle.sprite = puzzleImage;
 
-        transform.localScale = transform.localScale * scaleAndPositionRatio;
-        wholePuzzle.transform.localScale = wholePuzzle.transform.localScale / scaleAndPositionRatio;
-
+         transform.localScale = transform.localScale * scaleAndPositionRatio;
+         wholePuzzle.transform.localScale = wholePuzzle.transform.localScale / scaleAndPositionRatio;
         transform.localPosition = GetCalculatedPosition(rowIndex, colIndex, scaleAndPositionRatio);
         wholePuzzle.transform.rotation = Quaternion.identity;
     }
@@ -83,7 +91,13 @@ public class Piece : MonoBehaviour
     }
     public Vector2 GetCalculatedPosition(int row,int col, float scaleAndPositionRatio)
     {
-       return new Vector2(-2.07f + (scaleAndPositionRatio * 0.74f * col), 3.217f - (scaleAndPositionRatio * 0.747f * row));
+       return new Vector2(-435f + (scaleAndPositionRatio * 171 * col), 401 - (scaleAndPositionRatio *160* row));
+    }
+    
+    public void SetParent(Transform parent)
+    {
+        transform.SetParent(parent);
+        parent.localScale = Vector2.one;
     }
     #endregion
 }

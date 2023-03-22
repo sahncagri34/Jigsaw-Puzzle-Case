@@ -16,19 +16,10 @@ public class LevelImageItem : MonoBehaviour
     public event Action<LevelImageItem> OnSelected;
     public event Action<LevelImageItem> OnDestroyed;
 
-    private void Awake()
-    {
-        selectButton.onClick.AddListener(OnButtonClicked);
-    }
-    private void OnDestroy()
-    {
-        OnDestroyed?.Invoke(this);
-    }
-    private void OnButtonClicked()
-    {
-        OnSelected?.Invoke(this);
-    }
-    
+    private void Awake() => selectButton.onClick.AddListener(OnButtonClicked);
+    private void OnDestroy() => OnDestroyed?.Invoke(this);
+    private void OnButtonClicked() => OnSelected?.Invoke(this);
+
     public void Set(Sprite levelSprite)
     {
         LevelSprite = levelSprite;

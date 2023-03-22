@@ -26,8 +26,6 @@ public class LevelSelectionPanel : BasePanel
     private LevelImageItem currentSelectedLevelItem;
     private BoardSizeItem currentSelectedSizeItem;
 
-    public static event Action<Sprite,int> OnLevelSelected;
-
     private void Awake()
     {
         levelSprites = GameData.Instance.GetLevelDatas();
@@ -45,9 +43,10 @@ public class LevelSelectionPanel : BasePanel
             // TODO  : UIManager.Instance.PushPanel(UIPanelsType.Notify); with the message : "Please Select one of the images"
             return;
         }
-        OnLevelSelected?.Invoke(currentSelectedLevelItem.LevelSprite, currentSelectedSizeItem.boardSize);
+        // OnLevelSelected?.Invoke(currentSelectedLevelItem.LevelSprite, currentSelectedSizeItem.boardSize);
 
-        UIManager.Instance.PushPanel(UIPanelType.GamePanel);
+        var panel = UIManager.Instance.PushPanel<GamePanel>();
+        panel.SetLevel(currentSelectedLevelItem.LevelSprite, currentSelectedSizeItem.boardSize);
     }
 
     private void SetLevelItems()

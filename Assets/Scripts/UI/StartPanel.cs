@@ -15,7 +15,7 @@ public class StartPanel : BasePanel
 
     private void OnStartButtonClicked()
     {
-        UIManager.Instance.PushPanel(UIPanelType.LevelSelectionPanel);
+        UIManager.Instance.PushPanel<LevelSelectionPanel>();
     }
 
 }

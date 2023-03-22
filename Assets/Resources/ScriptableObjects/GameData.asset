@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: GameData
   m_EditorClassIdentifier: 
   piecePrefabs:
-  - {fileID: 2551566862142963356, guid: 7ce7483a7ece81644a27f025006521ad, type: 3}
-  - {fileID: 2493433369678981512, guid: 14ae0574210ea724798fd760c4e1e5a2, type: 3}
-  - {fileID: 2106432425662334853, guid: f46179b78a22f4c40b76e529484dd064, type: 3}
-  - {fileID: 3763174880008986342, guid: e0ca9dcec446c2840870c84aaa508c5c, type: 3}
+  - {fileID: 2192403071484464619, guid: 66f0167b8712ad94da867af2295e1f9f, type: 3}
+  - {fileID: 5550270729640066972, guid: c98759e658a82dc41b7eb57ea485f07a, type: 3}
+  - {fileID: 6689613961206203249, guid: c5477a0b85c82544abfdee0cb73d8e32, type: 3}
+  - {fileID: 8195424607186644156, guid: 992c45af837abc249b4c6a85a456ec45, type: 3}
   levelSprites:
   - {fileID: 21300000, guid: 5b3b078261d852547bf6ed12c625f689, type: 3}
   - {fileID: 21300000, guid: 541dbabde2733ab439067e628ea00083, type: 3}

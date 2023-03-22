@@ -16,18 +16,9 @@ public class BoardSizeItem : MonoBehaviour
     public event Action<BoardSizeItem> OnSelected;
     public event Action<BoardSizeItem> OnDestroyed;
 
-    private void Awake()
-    {
-        selectButton.onClick.AddListener(OnButtonClicked);
-    }
-    private void OnDestroy()
-    {
-        OnDestroyed?.Invoke(this);
-    }
-    private void OnButtonClicked()
-    {
-        OnSelected?.Invoke(this);
-    }
+    private void Awake() => selectButton.onClick.AddListener(OnButtonClicked);
+    private void OnDestroy() => OnDestroyed?.Invoke(this);
+    private void OnButtonClicked() => OnSelected?.Invoke(this);
 
     public void Set(int boardSize)
     {
