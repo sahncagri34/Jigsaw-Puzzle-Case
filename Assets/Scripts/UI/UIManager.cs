@@ -13,10 +13,10 @@ public class UIManager : SingletonBehaviour<UIManager>
     private void Initilize()
     {
         panelStack = new Stack<BasePanel>();
-        PushPanel(UIPanelType.StartPanel);
+        PushPanel<StartPanel>();
     }
 
-    public BasePanel PushPanel(UIPanelType panelType)
+    public T PushPanel<T>() where T : BasePanel
     {
         if (panelStack.Count > 0)
         {
@@ -24,7 +24,7 @@ public class UIManager : SingletonBehaviour<UIManager>
             currentPanel.Hide();
         }
 
-        BasePanel panelToPush = GetPanel(panelType);
+        T panelToPush = GetPanel<T>();
         panelToPush.Show();
 
         panelStack.Push(panelToPush);
@@ -41,19 +41,20 @@ public class UIManager : SingletonBehaviour<UIManager>
         panelToPop.Hide();
         currentPanel.Show();
     }
-
-
-    public BasePanel GetPanel(UIPanelType panelType)
+    public T GetPanel<T>() where T : BasePanel
     {
-        var panel = panels.Find(x => x.uiPanelType == panelType);
-        return panel;
+        foreach (var panel in panels)
+        {
+            if (panel is T)
+            {
+                return (T)panel;
+            }
+        }
+        return null;
     }
+
+
+
+
 }
-public enum UIPanelType
-{
-    None,
-    StartPanel,
-    LevelSelectionPanel,
-    GamePanel,
-    WinPanel
-}
+
