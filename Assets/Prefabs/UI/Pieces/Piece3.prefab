@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5175963960305260833}
   - component: {fileID: 6689613961206203249}
+  - component: {fileID: 4677039905816796327}
   m_Layer: 5
   m_Name: Piece3
   m_TagString: Untagged
@@ -61,7 +62,21 @@ MonoBehaviour:
     EdgeState: 2
   - EdgeType: 2
     EdgeState: 3
-  wholePuzzle: {fileID: 5015431694111875714}
+  subPuzzle: {fileID: 5015431694111875714}
+  initialPosition: {x: 0, y: 0, z: 0}
+  initialScale: {x: 0, y: 0}
+--- !u!114 &4677039905816796327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372300407271799960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 317dd1624bd1aa84488de40d22f3e88d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3477648113381022018
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,7 +89,7 @@ GameObject:
   - component: {fileID: 7748557258478803852}
   - component: {fileID: 5015431694111875714}
   m_Layer: 5
-  m_Name: Graphic
+  m_Name: SubPuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -152,7 +152,7 @@ public static class SpawnerTools
         }
     }
 
-    
+
 }
 [System.Serializable]
 public class Coordinate

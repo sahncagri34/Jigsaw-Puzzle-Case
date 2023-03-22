@@ -10,8 +10,8 @@ public class GamePanel : BasePanel
 {
     [SerializeField] Transform pieceParent;
     [SerializeField] RectTransform centeredObject;
-    [SerializeField] Image centeredBackground;
     [SerializeField] RectTransform bottomLayout;
+    [SerializeField] Button playButton;
 
     private Piece[,] Board;
     private List<Piece> piecePrefabs;
@@ -19,11 +19,12 @@ public class GamePanel : BasePanel
     private Sprite levelSprite;
     private int boardSize;
 
-    public static event Action OnBoardReady;
+    public static event Action<Piece[,]> OnBoardReady;
 
     private void Awake()
     {
         piecePrefabs = GameData.Instance.GetPiecePrefabs();
+        playButton.onClick.AddListener(MovePiecesToBottom);
     }
 
     #region Spawn Functions
@@ -32,10 +33,11 @@ public class GamePanel : BasePanel
     {
         this.levelSprite = levelSprite;
         this.boardSize = boardSize;
-        this.centeredBackground.sprite = levelSprite;
         int length = (int)Mathf.Sqrt(boardSize);
 
         CreateBoard(length);
+        
+        playButton.gameObject.SetActive(true);
     }
 
     private void CreateBoard(int length)
@@ -50,17 +52,19 @@ public class GamePanel : BasePanel
         // Used Algortyhm to fill the empty slots.
         SetEmptySlots();
 
-        //SetWholePuzzleSpriteObjectThatExistInEachPiece
-        SetWholePuzzleImages();
+        //SetSubPuzzleSpriteObjectThatExistInEachPiece
+        SetSubPuzzleImages();
 
         //AlignCenter
         AlignCenter();
+        
+        //SetInitialVariablesOfPieces
+        SetInitialVariables();
 
+        
         //Wait for Pieces to placed to bottom
         // MovePiecesToBottom();
         // yield return MovePiecesToBottom();
-
-        OnBoardReady?.Invoke();
     }
     private void SetCorners()
     {
@@ -161,14 +165,14 @@ public class GamePanel : BasePanel
         }
 
     }
-    private void SetWholePuzzleImages()
+    private void SetSubPuzzleImages()
     {
         var position = Board.GetCenterPositionOfBoard();
 
         Board.Iterate((int rowIndex, int columnIndex) =>
         {
             Piece piece = Board[rowIndex, columnIndex];
-            piece.SetWholePuzzleImagePosition(position);
+            piece.SetSubPuzzleImagePosition(position);
         });
     }
     private void AlignCenter()
@@ -179,37 +183,25 @@ public class GamePanel : BasePanel
         pieceParent.SetParent(centeredObject);
         centeredObject.localPosition = Vector3.zero;
     }
+    private void SetInitialVariables()
+    {
+        Board.Iterate((int rowIndex,int colIndex) =>{
+            Piece piece = Board[rowIndex, colIndex];
+            piece.SetInitialVariables();
+        });
+    }
     private void MovePiecesToBottom()
     {
         Board.Iterate((int rowIndex, int colIndex) =>
         {
             Piece piece = Board[rowIndex, colIndex];
-            piece.SetParent(bottomLayout);
+            piece.SetParent(bottomLayout,Vector2.one);
         });
-
+        
+        OnBoardReady?.Invoke(Board);
     }
 
     
-    // private IEnumerator MovePiecesToBottom()
-    // {
-    //     float duration = 1.5f;
-        
-    //     Board.Iterate((int rowIndex, int colIndex) =>
-    //     {
-    //         Piece piece = Board[rowIndex, colIndex];
-
-    //         var delayDuration = Random.Range(0,duration);
-    //         piece.transform.DOMove(bottomLayout.position, duration).SetDelay(delayDuration).SetEase(Ease.InFlash)
-    //         .OnComplete(() =>
-    //         {
-    //             piece.SetParent(bottomLayout);
-    //         });
-
-    //     });
-
-    //     yield return new WaitForSeconds(duration);
-    // }
-
     #endregion
 
 

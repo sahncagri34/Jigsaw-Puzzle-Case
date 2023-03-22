@@ -9,16 +9,60 @@ public class Piece : MonoBehaviour
     public TileType TileType;
     public List<Edge> Edges;
 
-    public Image wholePuzzle;
+    public Image subPuzzle;
 
-    private Vector2 initialScale;
+    public Vector3 initialPosition;
+    public Vector2 initialScale;
+    private Transform initialParent;
 
+    private Dragger dragger;
+
+    public event Action<Piece> OnPlacedCorrectly;
 
     private void Awake() {
-        initialScale = transform.localScale;
+        dragger = GetComponent<Dragger>();
+
+        dragger.OnReleasedObject += Dragger_OnReleasedObject;
+        dragger.OnGrabbedObject += Dragger_OnGrabbedObject;
+    }
+    private void OnDestroy() {
+        dragger.OnReleasedObject -= Dragger_OnReleasedObject;
+        dragger.OnGrabbedObject -= Dragger_OnGrabbedObject;
     }
 
-    
+    public void SetDraggerActive()
+    {
+        dragger.SetDraggerActive();
+    }
+
+    private void Dragger_OnReleasedObject(Vector3 releasedPosition)
+    {
+        Vector3 newPosition = SetClosestPosition(releasedPosition);
+
+        if (CheckIfPositionCorrect(newPosition))
+        {
+            dragger.canMove = false;
+            OnPlacedCorrectly?.Invoke(this);
+        }
+    }
+    private void Dragger_OnGrabbedObject()
+    {
+        SetParent(initialParent,initialScale);
+    }
+    private Vector3 SetClosestPosition(Vector3 targetPos)
+    {
+        SetParent(initialParent,initialScale);
+
+        Vector3 position = GameManager.Instance.GetClosestPosition(targetPos);
+        transform.position = position;
+
+        return position;
+    }
+    private bool CheckIfPositionCorrect(Vector3 targetPosition)
+    {
+        return Vector3.Distance(initialPosition, targetPosition) < 1f;
+    }
+
     #region Spawn
 
     public void Rotate(int rotateTimes)
@@ -75,29 +119,37 @@ public class Piece : MonoBehaviour
         return true;
     }
 
-    internal void SetPiece(Sprite puzzleImage,int rowIndex, int colIndex,float scaleAndPositionRatio)
+    public void SetPiece(Sprite puzzleImage, int rowIndex, int colIndex, float scaleAndPositionRatio)
     {
-        wholePuzzle.sprite = puzzleImage;
+        subPuzzle.sprite = puzzleImage;
 
-         transform.localScale = transform.localScale * scaleAndPositionRatio;
-         wholePuzzle.transform.localScale = wholePuzzle.transform.localScale / scaleAndPositionRatio;
+        transform.localScale = transform.localScale * scaleAndPositionRatio;
+
         transform.localPosition = GetCalculatedPosition(rowIndex, colIndex, scaleAndPositionRatio);
-        wholePuzzle.transform.rotation = Quaternion.identity;
+
+        subPuzzle.transform.localScale = subPuzzle.transform.localScale / scaleAndPositionRatio;
+        subPuzzle.transform.rotation = Quaternion.identity;
     }
     
-    public void SetWholePuzzleImagePosition(Vector3 puzzleImagePosition)
+    public void SetSubPuzzleImagePosition(Vector3 puzzleImagePosition)
     {
-        wholePuzzle.transform.position = puzzleImagePosition;
+        subPuzzle.transform.position = puzzleImagePosition;
     }
     public Vector2 GetCalculatedPosition(int row,int col, float scaleAndPositionRatio)
     {
        return new Vector2(-435f + (scaleAndPositionRatio * 171 * col), 401 - (scaleAndPositionRatio *160* row));
     }
-    
-    public void SetParent(Transform parent)
+    public void SetInitialVariables()
     {
-        transform.SetParent(parent);
-        parent.localScale = Vector2.one;
+        initialParent = transform.parent;
+        initialPosition = transform.position;
+        initialScale = transform.localScale;
+    }
+    public void SetParent(Transform parent,Vector2 scale)
+    {
+        transform.localScale = scale;
+        transform.SetParent(parent,false);
     }
     #endregion
+
 }
