@@ -15,6 +15,9 @@ public class GameManager : SingletonBehaviour<GameManager>
         base.Awake();
     }
 
+    private void OnDestroy() {
+        GamePanel.OnBoardReady -= GamePanel_OnBoardReady;
+    }
 
     public Vector3 GetClosestPosition(Vector3 position)
     {
