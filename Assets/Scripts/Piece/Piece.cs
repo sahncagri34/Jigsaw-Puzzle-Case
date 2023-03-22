@@ -148,7 +148,7 @@ public class Piece : MonoBehaviour
     public void SetParent(Transform parent,Vector2 scale)
     {
         transform.localScale = scale;
-        transform.SetParent(parent,false);
+        transform.SetParent(parent);
     }
     #endregion
 

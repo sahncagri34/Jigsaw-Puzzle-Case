@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -12,6 +13,8 @@ public class GamePanel : BasePanel
     [SerializeField] RectTransform centeredObject;
     [SerializeField] RectTransform bottomLayout;
     [SerializeField] Button playButton;
+    [SerializeField] Image backGround;
+    [SerializeField] Button restartButton;
 
     private Piece[,] Board;
     private List<Piece> piecePrefabs;
@@ -25,6 +28,7 @@ public class GamePanel : BasePanel
     {
         piecePrefabs = GameData.Instance.GetPiecePrefabs();
         playButton.onClick.AddListener(MovePiecesToBottom);
+        restartButton.onClick.AddListener(OnRestartButtonClicked);
     }
 
     #region Spawn Functions
@@ -32,6 +36,7 @@ public class GamePanel : BasePanel
     public void SetLevel(Sprite levelSprite, int boardSize)
     {
         this.levelSprite = levelSprite;
+        this.backGround.sprite = levelSprite;
         this.boardSize = boardSize;
         int length = (int)Mathf.Sqrt(boardSize);
 
@@ -182,6 +187,7 @@ public class GamePanel : BasePanel
         centeredObject.position = centerPositionOfBoard;
         pieceParent.SetParent(centeredObject);
         centeredObject.localPosition = Vector3.zero;
+        backGround.transform.parent.position = centeredObject.parent.position;
     }
     private void SetInitialVariables()
     {
@@ -204,5 +210,9 @@ public class GamePanel : BasePanel
     
     #endregion
 
+    private void OnRestartButtonClicked()
+    {
+        SceneManager.LoadScene(0);
+    }
 
 }
