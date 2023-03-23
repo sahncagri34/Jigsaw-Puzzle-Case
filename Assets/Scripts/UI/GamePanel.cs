@@ -12,10 +12,11 @@ public class GamePanel : BasePanel
     [SerializeField] Transform pieceParent;
     [SerializeField] RectTransform centeredObject;
     [SerializeField] RectTransform bottomLayout;
+    [SerializeField] GameObject backGround;
 
     [Header("GUI")]
     [SerializeField] Button playButton;
-    [SerializeField] GameObject backGround;
+    [SerializeField] Image backGroundImage;
     [SerializeField] Button restartButton;
     [SerializeField] Button tipsButton;
 
@@ -40,7 +41,7 @@ public class GamePanel : BasePanel
     public void SetLevel(Sprite levelSprite, int boardSize)
     {
         this.levelSprite = levelSprite;
-        backGround.GetComponentInChildren<Image>().sprite = levelSprite;
+        backGroundImage.sprite = levelSprite;
         this.boardSize = boardSize;
         int length = (int)Mathf.Sqrt(boardSize);
 

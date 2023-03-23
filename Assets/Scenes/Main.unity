@@ -440,8 +440,9 @@ MonoBehaviour:
   pieceParent: {fileID: 18601820}
   centeredObject: {fileID: 2117803034}
   bottomLayout: {fileID: 1257229075}
-  playButton: {fileID: 1144280200}
   backGround: {fileID: 1066100326}
+  playButton: {fileID: 1144280200}
+  backGroundImage: {fileID: 1796059890}
   restartButton: {fileID: 1849534845}
   tipsButton: {fileID: 1538538643}
 --- !u!225 &440368087
