@@ -43,8 +43,6 @@ public class LevelSelectionPanel : BasePanel
             // TODO  : UIManager.Instance.PushPanel(UIPanelsType.Notify); with the message : "Please Select one of the images"
             return;
         }
-        // OnLevelSelected?.Invoke(currentSelectedLevelItem.LevelSprite, currentSelectedSizeItem.boardSize);
-
         var panel = UIManager.Instance.PushPanel<GamePanel>();
         panel.SetLevel(currentSelectedLevelItem.LevelSprite, currentSelectedSizeItem.boardSize);
     }

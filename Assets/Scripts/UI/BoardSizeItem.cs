@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class BoardSizeItem : MonoBehaviour
 {
-    [SerializeField] private Image selectedImage;
     [SerializeField] private Button selectButton;
     [SerializeField] private Text sizeText;
 
@@ -29,6 +28,5 @@ public class BoardSizeItem : MonoBehaviour
     {
         var scaleFactor = isSelected == true ? 1.3f : 1f;
         transform.localScale = Vector3.one*scaleFactor;
-        // selectedImage.gameObject.SetActive(isSelected);
     }
 }

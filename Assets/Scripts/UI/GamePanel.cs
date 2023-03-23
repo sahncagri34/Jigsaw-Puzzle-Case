@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,12 +8,16 @@ using Random = UnityEngine.Random;
 
 public class GamePanel : BasePanel
 {
+    [Header("Parents")]
     [SerializeField] Transform pieceParent;
     [SerializeField] RectTransform centeredObject;
     [SerializeField] RectTransform bottomLayout;
+
+    [Header("GUI")]
     [SerializeField] Button playButton;
-    [SerializeField] Image backGround;
+    [SerializeField] GameObject backGround;
     [SerializeField] Button restartButton;
+    [SerializeField] Button tipsButton;
 
     private Piece[,] Board;
     private List<Piece> piecePrefabs;
@@ -29,14 +32,15 @@ public class GamePanel : BasePanel
         piecePrefabs = GameData.Instance.GetPiecePrefabs();
         playButton.onClick.AddListener(MovePiecesToBottom);
         restartButton.onClick.AddListener(OnRestartButtonClicked);
+        tipsButton.onClick.AddListener(OnTipsButtonClicked);
     }
 
-    #region Spawn Functions
+
 
     public void SetLevel(Sprite levelSprite, int boardSize)
     {
         this.levelSprite = levelSprite;
-        this.backGround.sprite = levelSprite;
+        backGround.GetComponentInChildren<Image>().sprite = levelSprite;
         this.boardSize = boardSize;
         int length = (int)Mathf.Sqrt(boardSize);
 
@@ -103,7 +107,7 @@ public class GamePanel : BasePanel
             int modeOfRow = rowInner % 2;
 
             if ((modeOfRow == 0 && modeOfCol == 1) || (modeOfRow == 1 && modeOfCol == 0))
-                innerInstance.Rotate(1);
+                innerInstance.Rotate();
 
             innerInstance.SetPiece(levelSprite, rowInner, colInner, resizeRatio);
             Board[rowInner, colInner] = innerInstance;
@@ -187,7 +191,7 @@ public class GamePanel : BasePanel
         centeredObject.position = centerPositionOfBoard;
         pieceParent.SetParent(centeredObject);
         centeredObject.localPosition = Vector3.zero;
-        backGround.transform.parent.position = centeredObject.parent.position;
+        backGround.transform.position = centeredObject.parent.position;
     }
     private void SetInitialVariables()
     {
@@ -198,21 +202,25 @@ public class GamePanel : BasePanel
     }
     private void MovePiecesToBottom()
     {
-        Board.Iterate((int rowIndex, int colIndex) =>
+        var shuffledBoard = Board.Shuffle();
+
+        shuffledBoard.Iterate((int rowIndex, int colIndex) =>
         {
-            Piece piece = Board[rowIndex, colIndex];
+            Piece piece = shuffledBoard[rowIndex, colIndex];
             piece.SetParent(bottomLayout,Vector2.one);
         });
         
         OnBoardReady?.Invoke(Board);
     }
 
-    
-    #endregion
-
     private void OnRestartButtonClicked()
     {
         SceneManager.LoadScene(0);
     }
+    private void OnTipsButtonClicked()
+    {
+        var isActive = backGround.activeSelf;
 
+        backGround.gameObject.SetActive(!isActive);
+    }
 }

@@ -68,7 +68,13 @@ public class GameManager : SingletonBehaviour<GameManager>
         
         if(lengthOfCorrectlyPlacedObjects >= boardSize)
         {
-            UIManager.Instance.PushPanel<WinPanel>();
+            StartCoroutine(CallWinState());
         }
+    }
+
+    private IEnumerator CallWinState()
+    {
+        yield return new WaitForSeconds(1f);
+        UIManager.Instance.PushPanel<WinPanel>();
     }
 }

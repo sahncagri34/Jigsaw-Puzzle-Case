@@ -65,7 +65,7 @@ public class Piece : MonoBehaviour
 
     #region Spawn
 
-    public void Rotate(int rotateTimes)
+    public void Rotate(int rotateTimes=1)
     {
         //Rotated 90 degree each time, Changed Edge States According to rotation
      
@@ -100,7 +100,7 @@ public class Piece : MonoBehaviour
             {
                 break;
             }
-            Rotate(1);
+            Rotate();
         }
     }
     private bool CompareEdges(List<Edge> possibleEdges)

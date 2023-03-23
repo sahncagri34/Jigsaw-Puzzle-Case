@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using Random = System.Random;
 
 public static class SpawnerTools
 {
@@ -151,6 +151,47 @@ public static class SpawnerTools
             }
         }
     }
+    public static Piece[,] Shuffle(this Piece[,] Board)
+    {
+        int rows = Board.GetLength(0);
+        int cols = Board.GetLength(1);
+
+        Piece[,] shuffledBoard = new Piece[rows, cols];
+        Random random = new Random();
+
+        List<Piece> pieces = new List<Piece>();
+        foreach (Piece piece in Board)
+        {
+            pieces.Add(piece);
+        }
+        pieces.Shuffle(random);
+
+        int i = 0;
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < cols; col++)
+            {
+                shuffledBoard[row, col] = pieces[i];
+                i++;
+            }
+        }
+
+        return shuffledBoard;
+    }
+
+// Fisher-Yates shuffle algorithm
+public static void Shuffle<T>(this IList<T> list, Random random)
+{
+    int n = list.Count;
+    while (n > 1)
+    {
+        n--;
+        int k = random.Next(n + 1);
+        T temp = list[k];
+        list[k] = list[n];
+        list[n] = temp;
+    }
+}
 
 
 }

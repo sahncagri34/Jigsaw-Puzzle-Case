@@ -13,5 +13,6 @@ public class BasePanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    
 
 }
